@@ -12,3 +12,6 @@ const Post = db.sequelize.define('postagens', {
 
 //Comentamos o sync para ele não gerar um banco de dados vazio novamente
 //Post.sync({force: true})
+
+//Export do Post para o index.js
+module.exports = Post;
