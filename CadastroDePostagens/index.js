@@ -1,39 +1,60 @@
-//Import de módulos necessarios
+// Import de módulos necessários
 const express = require('express');
-//Body Parser é um módulo util para captação de formulários
-const bodyParser = require('body-parser')
-//Import do módulo Post
-const Post = require('./models/Post.js')
 const app = express();
+// Body Parser é um módulo útil para captação de formulários
+const bodyParser = require('body-parser');
+// Import do módulo Post
+const Post = require('./models/Post.js');
+const handlebars = require('express-handlebars');
 
-//config Body Parser
-app.use(bodyParser.urlencoded({extened: false}))
-app.use(bodyParser.json())
+// Configuração do Body Parser
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-//Rotas
+// Configuração do handlebars
+app.engine('handlebars', handlebars.engine({defaultLayout: 'main'}))
+app.set('view engine', 'handlebars')
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/view/home.html')
-})
+// Rotas
+app.get('/', function (req, res) {
+    // Função que retorna todos os objetos Post do banco de dados
+    Post.findAll().then(function (posts) {
+        res.render('home', {
+            posts: posts
+        });
+    }).catch(function (error) {
+        res.send('Ocorreu um erro ao buscar os posts: ' + error);
+    });
+});
 
-app.get('/cadastro', function(req, res){
-    res.sendFile(__dirname + '/view/main.html')
-})
+app.get('/cadastro', function (req, res) {
+    res.render('main');
+});
 
-//Como nosso formulário está utilizando POST em vez de GET, nossa rota terá que ser encontrada via POST, então utilizamos o método POST do express
-app.post('/add', function(req, res){
+// Como nosso formulário está utilizando POST em vez de GET, nossa rota terá que ser encontrada via POST
+app.post('/add', function (req, res) {
     Post.create({
         titulo: req.body.titulo,
         conteudo: req.body.conteudo
-    }).then(function(){
-        //Função para redirecionar a pagina após o POST ser criado
+    }).then(function () {
+        // Função para redirecionar a página após o POST ser criado
         res.redirect('/');
-    }).catch(function(error){
-        res.send('Occoreu um erro durante o envio do formulário, Erro: ' + error)
+    }).catch(function (error) {
+        res.send('Ocorreu um erro durante o envio do formulário, Erro: ' + error);
+    });
+});
+
+//Rota para Deletar
+app.get('/deletar/:id', function(){
+    Post.destry({where: {'id':req.params.id}}).then(function(){
+        res.send('Postagem Deletada')
+    }).catch(function(){
+        res.send('Esta postagem Não existe')
     })
 })
 
-const porta = 8081
+// Configuração da porta
+const porta = 8081;
 app.listen(porta, function () {
-    console.log(`O servidor está rodando na porta ${porta}`)
-})
+    console.log(`O servidor está rodando na porta ${porta}`);
+});
