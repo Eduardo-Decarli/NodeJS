@@ -5,15 +5,17 @@ const app = express();
 const bodyParser = require('body-parser');
 // Import do módulo Post
 const Post = require('./models/Post.js');
-const handlebars = require('express-handlebars');
+const { engine } = require('express-handlebars');
+const path = require('path'); // Importar path para manipulação de caminhos
 
 // Configuração do Body Parser
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Configuração do handlebars
-app.engine('handlebars', handlebars.engine({defaultLayout: 'main'}))
-app.set('view engine', 'handlebars')
+app.engine('handlebars', engine({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, 'views'));
 
 // Rotas
 app.get('/', function (req, res) {
@@ -28,7 +30,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/cadastro', function (req, res) {
-    res.render('main');
+    res.render('formulario');
 });
 
 // Como nosso formulário está utilizando POST em vez de GET, nossa rota terá que ser encontrada via POST
@@ -44,14 +46,14 @@ app.post('/add', function (req, res) {
     });
 });
 
-//Rota para Deletar
-app.get('/deletar/:id', function(){
-    Post.destry({where: {'id':req.params.id}}).then(function(){
-        res.send('Postagem Deletada')
-    }).catch(function(){
-        res.send('Esta postagem Não existe')
-    })
-})
+// Rota para Deletar
+app.get('/deletar/:id', function (req, res) {
+    Post.destroy({ where: { id: req.params.id } }).then(function () {
+        res.send('Postagem Deletada');
+    }).catch(function () {
+        res.send('Esta postagem Não existe');
+    });
+});
 
 // Configuração da porta
 const porta = 8081;
