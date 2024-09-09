@@ -1,0 +1,17 @@
+O mongo DB é um banco de dados não relacional baseado em NoSQL e orientado a documentos.
+A cada novo registro no banco de dados, é criado um arquivo em especifico e lido como JSON, por isso é muito utilizado para JS
+
+Comando mongosh abre o terminal do mongoDB
+
+Estrutura do mongoDB
+Banco de dados (Databases): São conjuntos de coleções
+Coleção (Collection): Conjunto de documentos
+Documento: Unidade de dados, armazenados no formato JSON/BSON
+
+Comandos Básicos
+- Acessa o MongoDB -> mongosh
+- Inicia o Servidor mongo -> sudo systemctl start mongod
+- Mostra os Databases -> show dbs;
+- Cria ou Usa um Database -> use nome_do_banco
+- Lista as Coleções -> show collections
+- Busca os Documentos de uma Coleção -> db.nome_da_colecao.find()
